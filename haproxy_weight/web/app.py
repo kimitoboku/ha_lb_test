@@ -14,4 +14,4 @@ def get_hit_count():
 def hello():
     count = get_hit_count()
     hostname = gethostname()
-    return 'Hello World! I have been seen {} times in {}.\n'.format(count, hostname)
+    return '{} times in {}.\n'.format(count, hostname)

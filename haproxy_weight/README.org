@@ -1,0 +1,26 @@
+* HAProxy + weight
+We can test act-stb architecture as follows commnads:
+HAProxy + weight is not correct act-stb architecture.
+But, the config is usefull when we want to provide locality, for example, Multi-AZs.
+
+#+BEGIN_SRC console
+$ : start HAProxy and backend servers
+$ docker compose up -d --build
+$ : test with curl
+$ curl 0.0.0.0:8000
+1 times in web1.
+$ curl 0.0.0.0:8000
+2 times in web1.
+$ curl 0.0.0.0:8000
+3 times in web1.
+$ : kill web1
+$ docker kill haproxy_weight-web1-1
+haproxy_weight-web1-1
+$ : test migration
+$ curl 0.0.0.0:8000
+1 times in web2.
+$ curl 0.0.0.0:8000
+2 times in web2.
+$ curl 0.0.0.0:8000
+3 times in web2.
+#+END_SRC

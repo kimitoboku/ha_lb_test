@@ -6,5 +6,7 @@ services:
      - '8000:8080'
   web1:
     build: ./web/.
+    hostname: web1
   web2:
     build: ./web/.
+    hostname: web2
