@@ -1,0 +1,72 @@
+* HAProxy + backup
+HAProxy + backup architecture can provde correct act-stb architecture.
+If you want to act-stb architecture, I reccomend to use this config.
+
+In 8001 port, HAproxy use backup config.
+#+BEGIN_SRC
+backend apps_2
+  server web1 web1:5000 check
+  server web2 web2:5000 check
+  server web3 web3:5000 check backup
+  server web4 web4:5000 check backup
+#+END_SRC
+
+In 8000 port, HAproxy use backup config with allbackups options.
+#+BEGIN_SRC
+backend apps_2
+  option allbackups
+  server web1 web1:5000 check
+  server web2 web2:5000 check
+  server web3 web3:5000 check backup
+  server web4 web4:5000 check backup
+#+END_SRC
+
+
+We can test act-stb architecture as follows commnads:
+#+BEGIN_SRC console
+$ docker compose up -d --build
+
+$ : test with curl for 8001
+$ curl 0.0.0.0:8001
+1 times in web1.
+$ curl 0.0.0.0:8001
+1 times in web2.
+$ curl 0.0.0.0:8001
+2 times in web1.
+$ curl 0.0.0.0:8001
+2 times in web2.
+
+$ : test with curl for 8000
+$ curl 0.0.0.0:8000
+3 times in web1.
+$ curl 0.0.0.0:8000
+3 times in web2.
+$ curl 0.0.0.0:8000
+4 times in web1.
+$ curl 0.0.0.0:8000
+4 times in web2.
+
+$ : kill web1 and web2
+$ docker kill haproxy_backup-web1-1
+$ docker kill haproxy_backup-web2-1
+
+$ : test with curl for 8001
+$ curl 0.0.0.0:8001
+1 times in web3.
+$ curl 0.0.0.0:8001
+2 times in web3.
+$ curl 0.0.0.0:8001
+3 times in web3.
+$ curl 0.0.0.0:8001
+4 times in web3.
+
+$ : test with curl for 8000
+$ curl 0.0.0.0:8000
+5 times in web3.
+$ curl 0.0.0.0:8000
+1 times in web4.
+$ curl 0.0.0.0:8000
+6 times in web3.
+$ curl 0.0.0.0:8000
+2 times in web4.
+#+END_SRC

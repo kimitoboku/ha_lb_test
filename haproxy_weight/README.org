@@ -1,7 +1,8 @@
 * HAProxy + weight
-We can test act-stb architecture as follows commnads:
 HAProxy + weight is not correct act-stb architecture.
 But, the config is usefull when we want to provide locality, for example, Multi-AZs.
+
+We can test act-stb architecture as follows commnads:
 
 #+BEGIN_SRC console
 $ : start HAProxy and backend servers
